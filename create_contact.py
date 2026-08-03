@@ -1,11 +1,16 @@
 import requests
 
-url = "https://masar-class-api.a-f-almatrafi.workers.dev/api/posts"
-while url:
-    resp = requests.get(url, timeout=10)
-    if resp.status_code != 200:
-        break
-    data = resp.json()
-    for post in data["data"]:
-        print(post["id"], post["title"])
-    url = data["next"]
+BASE = "https://masar-class-api.a-f-almatrafi.workers.dev/api"
+me = "Mohammed"
+
+r = requests.post(f"{BASE}/students", json={"username": me}, timeout=10)
+print("register:", r.status_code) # 201 أول مرة — و409 إن كنت مسجّلاً، وكلاهما حسن
+
+r = requests.post(
+    f"{BASE}/students/{me}/contacts",
+    json={"name": "Salem", "phone": "0501234567"},
+    timeout=10,
+)
+print("create:", r.status_code)
+if r.status_code == 201:
+    print("new contact id:", r.json()["id"])
